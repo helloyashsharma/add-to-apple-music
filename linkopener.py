@@ -1,4 +1,5 @@
 import pyautogui
+import keyboard
 import urllib.parse
 import pyperclip
 import time
@@ -49,7 +50,7 @@ def lineparser():
         else:
             openlink(line)
 
-        time.sleep(5)
+        keyboard.wait('ctrl+space')
         pyautogui.hotkey('ctrl', 'w')
 
 
