@@ -5,11 +5,19 @@ from pynput import mouse
 import urllib.parse
 import pyperclip
 import time
+import threading
+
+isrunning = False
+lock = threading.Lock()
 
 def on_click(x, y, button, pressed):
     if pressed:
         if button == mouse.Button.left:
-            addsong()
+            with lock:
+                global isrunning
+                if not isrunning:
+                    isrunning = True
+                    threading.Thread(target=addsong, daemon=True).start()
         elif button == mouse.Button.middle:
             pass
         elif button == mouse.Button.right:
@@ -18,18 +26,25 @@ def on_click(x, y, button, pressed):
         return False # stop listening
 
 def addsong():
-    isFound = False
-    while not isFound:
-        try:
-            pos = pyautogui.locateCenterOnScreen('assets/fav.png', confidence=0.9)
-            if pos:
-                isFound = True
-        except pyautogui.ImageNotFoundException:
-            print("image not found")
-        
-        time.sleep(0.5)
+    try:
+        isFound = False
+        while not isFound:
+            try:
+                pos = pyautogui.locateCenterOnScreen('assets/fav.png', confidence=0.9)
+                if pos:
+                    isFound = True
+            except pyautogui.ImageNotFoundException:
+                print("image not found")
+            
+            time.sleep(0.5)
 
-    pyautogui.click(pos)
+        pyautogui.click(pos)
+    
+    finally:
+        with lock:
+            global isrunning
+            isrunning = False
+
 
 def openlink(line):
 
