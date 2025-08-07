@@ -1,18 +1,33 @@
 import pyautogui
 import keyboard
-import mouse
+from pynput import mouse
+# import mouse
 import urllib.parse
 import pyperclip
 import time
 
+def on_click(x, y, button, pressed):
+    if pressed:
+        if button == mouse.Button.left:
+            addsong()
+        elif button == mouse.Button.middle:
+            pass
+        elif button == mouse.Button.right:
+            return True # keep listening
+        
+        return False # stop listening
+
 def addsong():
     isFound = False
-    while isFound == False:
+    while not isFound:
         try:
             pos = pyautogui.locateCenterOnScreen('assets/fav.png', confidence=0.9)
-            isFound = True
+            if pos:
+                isFound = True
         except pyautogui.ImageNotFoundException:
             print("image not found")
+        
+        time.sleep(0.5)
 
     pyautogui.click(pos)
 
@@ -63,8 +78,10 @@ def lineparser():
             openlink(line)
 
         # keyboard.wait('ctrl+space')
-        mouse.wait(button='left')
-        addsong()
+        # mouse.wait(button='left')
+        with mouse.Listener(on_click=on_click) as listener:
+            listener.join()
+        # addsong()
         time.sleep(1.5)
         pyautogui.hotkey('ctrl', 'w')
 

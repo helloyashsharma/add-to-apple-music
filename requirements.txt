@@ -4,3 +4,4 @@ opencv-python
 keyboard
 pyperclip
 mouse
+pynput
