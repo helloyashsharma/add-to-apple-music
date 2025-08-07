@@ -1,8 +1,20 @@
 import pyautogui
 import keyboard
+import mouse
 import urllib.parse
 import pyperclip
 import time
+
+def addsong():
+    isFound = False
+    while isFound == False:
+        try:
+            pos = pyautogui.locateCenterOnScreen('assets/fav.png', confidence=0.9)
+            isFound = True
+        except pyautogui.ImageNotFoundException:
+            print("image not found")
+
+    pyautogui.click(pos)
 
 def openlink(line):
 
@@ -50,7 +62,10 @@ def lineparser():
         else:
             openlink(line)
 
-        keyboard.wait('ctrl+space')
+        # keyboard.wait('ctrl+space')
+        mouse.wait(button='left')
+        addsong()
+        time.sleep(1.5)
         pyautogui.hotkey('ctrl', 'w')
 
 
