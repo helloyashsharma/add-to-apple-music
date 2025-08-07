@@ -9,15 +9,17 @@ import threading
 
 isrunning = False
 lock = threading.Lock()
+addsong_thread = None
 
-def on_click(x, y, button, pressed):
+def onclick(x, y, button, pressed):
+    global isrunning, addsong_thread
     if pressed:
         if button == mouse.Button.left:
             with lock:
-                global isrunning
                 if not isrunning:
                     isrunning = True
-                    threading.Thread(target=addsong, daemon=True).start()
+                    addsong_thread = threading.Thread(target=addsong, daemon=True)
+                    addsong_thread.start()
         elif button == mouse.Button.middle:
             pass
         elif button == mouse.Button.right:
@@ -94,8 +96,10 @@ def lineparser():
 
         # keyboard.wait('ctrl+space')
         # mouse.wait(button='left')
-        with mouse.Listener(on_click=on_click) as listener:
+        with mouse.Listener(on_click=onclick) as listener:
             listener.join()
+        if addsong_thread:
+            addsong_thread.join()
         # addsong()
         time.sleep(1.5)
         pyautogui.hotkey('ctrl', 'w')
