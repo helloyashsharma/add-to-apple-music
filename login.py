@@ -13,13 +13,11 @@ with sync_playwright() as p:
         user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36', 
         locale='en-IN', 
         timezone_id='Asia/Kolkata', 
+        ignore_default_args=['--enable-automation'], 
         args=[
-            '--start-maximized'
+            '--start-maximized',
             '--disable-blink-features=AutomationControlled',
-            '--no-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-infobars',
-            '--disable-extensions'
+            '--disable-infobars'
         ]
     )
 
